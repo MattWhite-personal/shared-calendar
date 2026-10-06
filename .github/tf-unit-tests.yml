@@ -1,0 +1,58 @@
+name: 'Terraform Unit Tests'
+
+on:
+  push:
+    paths:
+      - 'terraform/**'
+
+permissions:
+  security-events: write # Needed to upload-sarif
+  contents: read # Needed to clone repo
+  actions: read # Potentially needed for private repositories (see https://github.com/github/codeql-action/issues/2117)
+
+jobs:
+  terraform-unit-tests:
+    name: 'Terraform Unit Tests'
+    runs-on: ubuntu-latest
+    
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init -backend=false
+
+    # Validate terraform files
+    - name: Terraform Validate
+      run: terraform validate
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check -recursive
+    
+    # Perform a security scan of the terraform code using checkov
+    - name: Run Checkov action
+      id: checkov
+      uses: bridgecrewio/checkov-action@f967808197a8d784d3e72919f38c3ff0cda7884e # v12.3122.0
+      with: 
+        framework: terraform
+        # This will add both a CLI output to the console and create a results.sarif file
+        output_format: cli,sarif
+        output_file_path: console,results.sarif
+        #skip_check: CKV_AZURE_33,CKV_AZURE_43,CKV_AZURE_59,CKV_AZURE_206,CKV2_AZURE_1,CKV2_AZURE_33,CKV2_AZURE_40,CKV2_AZURE_41
+
+     # Upload results to GitHub Advanced Security
+    - name: Upload SARIF file
+      if: success() || failure()
+      uses: github/codeql-action/upload-sarif@b96794f015dfd88f77b49b1c93e0fa7110f94c63 # v4.38.0
+      with:
+        sarif_file: results.sarif
+        category: checkov
+
+
