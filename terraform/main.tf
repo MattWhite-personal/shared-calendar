@@ -27,7 +27,6 @@ provider "azurerm" {
 }
 
 provider "azuread" {
-  features {}
   use_oidc = true
 }
 
