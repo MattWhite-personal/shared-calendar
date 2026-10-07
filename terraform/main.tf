@@ -13,9 +13,9 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "rg-whitefam-terraform"
-    storage_account_name = "stwhitefamterraform"
-    container_name       = "tfstate"
+    resource_group_name  = "terraformrg"
+    storage_account_name = "terraformstoragefe832e63"
+    container_name       = "terraform"
     key                  = "shared-calendar.tfstate"
     use_oidc             = true
   }
@@ -26,7 +26,9 @@ provider "azurerm" {
   use_oidc = true
 }
 
-provider "azuread" {}
+provider "azuread" {
+  use_oidc = true
+}
 
 resource "azurerm_resource_group" "shared_calendar" {
   name     = var.resource_group_name
@@ -39,17 +41,17 @@ resource "azurerm_resource_group" "shared_calendar" {
 }
 
 resource "azurerm_storage_account" "function" {
-  name                     = var.function_storage_account_name
-  resource_group_name      = azurerm_resource_group.shared_calendar.name
-  location                 = azurerm_resource_group.shared_calendar.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
-  account_kind             = "StorageV2"
-  min_tls_version          = "TLS1_2"
-  https_traffic_only_enabled = true
+  name                          = var.function_storage_account_name
+  resource_group_name           = azurerm_resource_group.shared_calendar.name
+  location                      = azurerm_resource_group.shared_calendar.location
+  account_tier                  = "Standard"
+  account_replication_type      = "LRS"
+  account_kind                  = "StorageV2"
+  min_tls_version               = "TLS1_2"
+  https_traffic_only_enabled    = true
   public_network_access_enabled = true
   shared_access_key_enabled     = true
-  tags                         = local.tags
+  tags                          = local.tags
 }
 
 resource "azurerm_service_plan" "function" {
