@@ -13,9 +13,9 @@ terraform {
   }
 
   backend "azurerm" {
-    resource_group_name  = "rg-whitefam-terraform"
-    storage_account_name = "stwhitefamterraform"
-    container_name       = "tfstate"
+    resource_group_name  = "terraformrg"
+    storage_account_name = "terraformstoragefe832e63"
+    container_name       = "terraform"
     key                  = "shared-calendar.tfstate"
     use_oidc             = true
   }
