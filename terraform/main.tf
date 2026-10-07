@@ -26,7 +26,10 @@ provider "azurerm" {
   use_oidc = true
 }
 
-provider "azuread" {}
+provider "azuread" {
+  features {}
+  use_oidc = true
+}
 
 resource "azurerm_resource_group" "shared_calendar" {
   name     = var.resource_group_name
