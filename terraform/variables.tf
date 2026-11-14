@@ -61,14 +61,17 @@ variable "app_registration_name" {
 variable "sibling_1_object_id" {
   description = "Object ID for sibling 1. This is an input-only value and is used as an app/service principal owner."
   type        = string
+  default     = "a8298c47-880f-48c8-92f1-a03324f8a6f2"
 }
 
 variable "sibling_2_object_id" {
   description = "Object ID for sibling 2. This is an input-only value and is used as an app/service principal owner."
   type        = string
+  default     = "a8298c47-880f-48c8-92f1-a03324f8a6f3"
 }
 
 variable "sibling_3_object_id" {
   description = "Object ID for sibling 3. This is an input-only value and is used as an app/service principal owner."
   type        = string
+  default     = "a8298c47-880f-48c8-92f1-a03324f8a6f4"
 }
